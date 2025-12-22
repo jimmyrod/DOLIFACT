@@ -2,3 +2,17 @@
 FacturaElectronicaEC=Electronic Invoice Ecuador
 FacturaElectronicaECSetupDesc=Configure the parameters for the Ecuador electronic invoicing module.
 Configuracion=Configuration
+FacturaElectronicaEC_Ambiente=SRI environment
+FacturaElectronicaEC_AmbientePruebas=Testing
+FacturaElectronicaEC_AmbienteProduccion=Production
+FacturaElectronicaEC_Ruc=Issuer RUC
+FacturaElectronicaEC_RazonSocial=Legal name
+FacturaElectronicaEC_NombreComercial=Trade name
+FacturaElectronicaEC_Establecimiento=Establishment
+FacturaElectronicaEC_PuntoEmision=Emission point
+FacturaElectronicaEC_DireccionMatriz=Head office address
+FacturaElectronicaEC_CertPath=Certificate path (.p12/.pfx)
+FacturaElectronicaEC_CertPassword=Certificate password
+FacturaElectronicaEC_Timeout=SRI timeout (seconds)
+FacturaElectronicaEC_RutaXml=XML storage path
+FacturaElectronicaEC_RutaLogs=Logs path

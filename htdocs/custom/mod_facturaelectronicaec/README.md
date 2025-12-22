@@ -5,6 +5,7 @@ Módulo de facturación electrónica para Ecuador (SRI) compatible con Dolibarr 
 ## Estado
 
 - **FASE 1 completada:** estructura estándar del módulo, descriptor y acceso desde el menú de administración.
+- **FASE 2 completada:** interfaz de configuración administrativa con parámetros SRI y rutas locales.
 
 ## Estructura
 
