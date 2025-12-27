@@ -8,6 +8,7 @@ Módulo de facturación electrónica para Ecuador (SRI) compatible con Dolibarr 
 - **FASE 2 completada:** interfaz de configuración administrativa con parámetros SRI y rutas locales.
 - **FASE 3 completada:** clase base para generación XML de Factura conforme SRI.
 - **FASE 4 completada:** firma electrónica XAdES-BES con OpenSSL y script de prueba.
+- **FASE 5 completada:** cliente SOAP para recepción/autorización del SRI y script de prueba de envío.
 
 ## Estructura
 
@@ -55,3 +56,15 @@ php htdocs/custom/mod_facturaelectronicaec/scripts/test_firma_xades.php
 
 El XML firmado se guarda en:
 `htdocs/custom/mod_facturaelectronicaec/xml/ejemplo_factura_sri_firmado.xml`.
+
+## Pruebas locales (envío y autorización SRI)
+
+Con un XML firmado válido, ejecutar:
+
+```bash
+FACTURAEC_AMBIENTE=1 \
+FACTURAEC_TIMEOUT=60 \
+php htdocs/custom/mod_facturaelectronicaec/scripts/test_envio_sri.php /ruta/al/xml_firmado.xml
+```
+
+El script realiza la llamada a **Recepción** y, si el estado es `RECIBIDA`, consulta **Autorización**.
