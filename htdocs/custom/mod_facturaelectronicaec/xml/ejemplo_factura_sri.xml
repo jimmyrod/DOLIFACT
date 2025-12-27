@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<factura id="comprobante" version="1.0.0">
+  <infoTributaria>
+    <ambiente>1</ambiente>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>EMPRESA DEMO SRI</razonSocial>
+    <nombreComercial>EMPRESA DEMO</nombreComercial>
+    <ruc>0999999999001</ruc>
+    <claveAcceso>010120240109999999990011001001000000001123456781</claveAcceso>
+    <codDoc>01</codDoc>
+    <estab>001</estab>
+    <ptoEmi>001</ptoEmi>
+    <secuencial>000000001</secuencial>
+    <dirMatriz>AV. DEMO 123</dirMatriz>
+  </infoTributaria>
+  <infoFactura>
+    <fechaEmision>01/01/2024</fechaEmision>
+    <dirEstablecimiento>AV. DEMO 123</dirEstablecimiento>
+    <obligadoContabilidad>NO</obligadoContabilidad>
+    <tipoIdentificacionComprador>05</tipoIdentificacionComprador>
+    <razonSocialComprador>CLIENTE DEMO</razonSocialComprador>
+    <identificacionComprador>0102030405</identificacionComprador>
+    <totalConImpuestos>
+      <totalImpuesto>
+        <codigo>2</codigo>
+        <codigoPorcentaje>2</codigoPorcentaje>
+        <baseImponible>100.00</baseImponible>
+        <valor>12.00</valor>
+      </totalImpuesto>
+    </totalConImpuestos>
+    <totalSinImpuestos>100.00</totalSinImpuestos>
+    <importeTotal>112.00</importeTotal>
+    <moneda>USD</moneda>
+  </infoFactura>
+  <detalles>
+    <detalle>
+      <descripcion>Producto demo</descripcion>
+      <cantidad>1.00</cantidad>
+      <precioUnitario>100.00</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>100.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>2</codigoPorcentaje>
+          <tarifa>12.00</tarifa>
+          <baseImponible>100.00</baseImponible>
+          <valor>12.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+  </detalles>
+</factura>
