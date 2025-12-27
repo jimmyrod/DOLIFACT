@@ -95,6 +95,7 @@ class InterfaceFacturaElectronicaEC
         $fechaAutorizacion = '';
         $rutaFirmado = '';
         $rutaAutorizado = '';
+        $rutaPdfAutorizado = '';
         $payloadRespuesta = array();
 
         try {
@@ -126,6 +127,12 @@ class InterfaceFacturaElectronicaEC
                     $fechaAutorizacion = $auth['fechaAutorizacion'];
                     if (!empty($auth['comprobante'])) {
                         $rutaAutorizado = $this->storeXml($config['ruta_xml'], $claveAcceso, $auth['comprobante'], 'autorizado');
+                    }
+                    if ($estadoFinal === 'AUTORIZADO') {
+                        $rutaPdfAutorizado = $this->generateAuthorizedPdf($object, $claveAcceso, $numeroAutorizacion, $fechaAutorizacion, $rutaAutorizado);
+                        if (!empty($rutaPdfAutorizado)) {
+                            $payloadRespuesta['pdf_autorizado'] = $rutaPdfAutorizado;
+                        }
                     }
                 }
             }
@@ -186,6 +193,77 @@ class InterfaceFacturaElectronicaEC
             'ruta_xml' => $rutaXml,
             'ruta_logs' => $rutaLogs,
         );
+    }
+
+    /**
+     * Generate a PDF with authorization data and attach it to the invoice document directory.
+     *
+     * @param Facture $object
+     * @param string  $claveAcceso
+     * @param string  $numeroAutorizacion
+     * @param string  $fechaAutorizacion
+     * @param string  $rutaXmlAutorizado
+     * @return string Path to generated PDF or empty string on failure.
+     */
+    private function generateAuthorizedPdf($object, $claveAcceso, $numeroAutorizacion, $fechaAutorizacion, $rutaXmlAutorizado)
+    {
+        global $conf, $langs;
+
+        require_once DOL_DOCUMENT_ROOT . '/core/lib/pdf.lib.php';
+        require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
+
+        $langs->loadLangs(array('main', 'bills', 'companies', 'facturaelectronicaec@mod_facturaelectronicaec'));
+
+        $dirOutput = !empty($conf->facture->dir_output) ? $conf->facture->dir_output : $conf->dol_data_root . '/facture';
+        $dirOutput .= '/' . $object->ref;
+        dol_mkdir($dirOutput);
+
+        $formatArray = pdf_getFormat();
+        $pdf = pdf_getInstance($formatArray);
+        if (!is_object($pdf)) {
+            return '';
+        }
+
+        $pdf->SetAutoPageBreak(true, 0);
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
+        $defaultFont = pdf_getPDFFont($langs);
+        $marginLeft = 15;
+        $marginTop = 20;
+
+        $pdf->AddPage();
+        $pdf->SetFont($defaultFont, 'B', 12);
+        $pdf->SetXY($marginLeft, $marginTop);
+        $pdf->MultiCell(0, 6, $langs->trans('FacturaElectronicaEC_PdfTitle'), 0, 'L');
+
+        $pdf->Ln(4);
+        $pdf->SetFont($defaultFont, '', 10);
+        $pdf->MultiCell(0, 5, $langs->trans('Invoice') . ': ' . $object->ref, 0, 'L');
+
+        if (empty($object->thirdparty) && method_exists($object, 'fetch_thirdparty')) {
+            $object->fetch_thirdparty();
+        }
+
+        if (!empty($object->thirdparty->name)) {
+            $pdf->MultiCell(0, 5, $langs->trans('Customer') . ': ' . $object->thirdparty->name, 0, 'L');
+        }
+
+        $pdf->Ln(2);
+        $pdf->SetFont($defaultFont, '', 9);
+        $pdf->MultiCell(0, 5, $langs->trans('FacturaElectronicaEC_AuthorizationNumber', $numeroAutorizacion), 0, 'L');
+        $pdf->MultiCell(0, 5, $langs->trans('FacturaElectronicaEC_AuthorizationDate', $fechaAutorizacion), 0, 'L');
+        $pdf->MultiCell(0, 5, $langs->trans('FacturaElectronicaEC_AccessKey', $claveAcceso), 0, 'L');
+
+        if (!empty($rutaXmlAutorizado)) {
+            $pdf->Ln(2);
+            $pdf->MultiCell(0, 5, $langs->trans('FacturaElectronicaEC_AuthorizedXml', $rutaXmlAutorizado), 0, 'L');
+        }
+
+        $pdfFile = $dirOutput . '/' . $object->ref . '-sri.pdf';
+        $pdf->Output($pdfFile, 'F');
+
+        return $pdfFile;
     }
 
     /**
