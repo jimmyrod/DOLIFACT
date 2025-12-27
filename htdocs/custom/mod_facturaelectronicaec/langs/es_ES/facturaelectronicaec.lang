@@ -1,0 +1,20 @@
+# Factura Electronica Ecuador module
+FacturaElectronicaEC=Factura Electrónica Ecuador
+FacturaElectronicaECSetupDesc=Configure los parámetros del módulo de facturación electrónica para Ecuador.
+Configuracion=Configuración
+FacturaElectronicaEC_Ambiente=Ambiente SRI
+FacturaElectronicaEC_AmbientePruebas=Pruebas
+FacturaElectronicaEC_AmbienteProduccion=Producción
+FacturaElectronicaEC_Ruc=RUC emisor
+FacturaElectronicaEC_RazonSocial=Razón social
+FacturaElectronicaEC_NombreComercial=Nombre comercial
+FacturaElectronicaEC_Establecimiento=Establecimiento
+FacturaElectronicaEC_PuntoEmision=Punto de emisión
+FacturaElectronicaEC_DireccionMatriz=Dirección matriz
+FacturaElectronicaEC_CertPath=Ruta del certificado (.p12/.pfx)
+FacturaElectronicaEC_CertPassword=Password del certificado
+FacturaElectronicaEC_Timeout=Timeout SRI (segundos)
+FacturaElectronicaEC_RutaXml=Ruta de almacenamiento XML
+FacturaElectronicaEC_RutaLogs=Ruta de logs
+FacturaElectronicaEC_StatusWarning=Factura electrónica enviada, estado SRI: %s
+FacturaElectronicaEC_StatusOk=Factura electrónica autorizada. Número: %s
