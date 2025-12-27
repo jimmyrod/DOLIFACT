@@ -16,3 +16,5 @@ FacturaElectronicaEC_CertPassword=Password del certificado
 FacturaElectronicaEC_Timeout=Timeout SRI (segundos)
 FacturaElectronicaEC_RutaXml=Ruta de almacenamiento XML
 FacturaElectronicaEC_RutaLogs=Ruta de logs
+FacturaElectronicaEC_StatusWarning=Factura electrónica enviada, estado SRI: %s
+FacturaElectronicaEC_StatusOk=Factura electrónica autorizada. Número: %s

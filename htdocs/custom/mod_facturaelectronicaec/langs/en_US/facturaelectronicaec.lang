@@ -16,3 +16,5 @@ FacturaElectronicaEC_CertPassword=Certificate password
 FacturaElectronicaEC_Timeout=SRI timeout (seconds)
 FacturaElectronicaEC_RutaXml=XML storage path
 FacturaElectronicaEC_RutaLogs=Logs path
+FacturaElectronicaEC_StatusWarning=Electronic invoice sent, SRI status: %s
+FacturaElectronicaEC_StatusOk=Electronic invoice authorized. Authorization: %s
