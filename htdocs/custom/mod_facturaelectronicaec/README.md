@@ -10,8 +10,8 @@ Módulo de facturación electrónica para Ecuador (SRI) compatible con Dolibarr 
 - **FASE 4 completada:** firma electrónica XAdES-BES con OpenSSL y script de prueba.
 - **FASE 5 completada:** cliente SOAP para recepción/autorización del SRI y script de prueba de envío.
 - **FASE 6 completada:** integración con validación de facturas Dolibarr (envío automático, persistencia de estado y almacenamiento de XML).
+- **FASE 7 completada:** generación de PDF autorizado con datos SRI en el directorio de la factura.
 - **FASE 8 completada:** logs detallados, reintentos manuales y contingencia offline.
-- **FASE 7 completada:** generación de PDF autorizado con clave de acceso y datos de autorización.
 
 ## Estructura
 
@@ -37,15 +37,10 @@ custom/mod_facturaelectronicaec/
 3. Active el módulo **Factura Electronica Ecuador** desde la lista de módulos.
 4. Abra el menú **FacturaElectronicaEC** para acceder a la configuración.
 
-## Próximas fases
+## Próximos pasos
 
-- Configuración administrativa.
-- Generación XML (Factura).
-- Firma XAdES-BES.
-- Envío y autorización SRI.
-- Integración con facturas Dolibarr.
-- PDF autorizado.
-- Logs y contingencia.
+- Extender a otros comprobantes electrónicos (notas de crédito, retenciones) siguiendo la misma arquitectura.
+- Mejorar el manejo de contingencia offline con colas programadas (cron) para reenviar automáticamente.
 
 ## Integración con facturas (Fase 6)
 
