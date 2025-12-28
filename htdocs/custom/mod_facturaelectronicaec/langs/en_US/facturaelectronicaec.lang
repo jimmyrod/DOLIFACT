@@ -18,6 +18,7 @@ FacturaElectronicaEC_RutaXml=XML storage path
 FacturaElectronicaEC_RutaLogs=Logs path
 FacturaElectronicaEC_StatusWarning=Electronic invoice sent, SRI status: %s
 FacturaElectronicaEC_StatusOk=Electronic invoice authorized. Authorization: %s
+FacturaElectronicaEC_StatusError=SRI flow stopped (%s). Detail: %s
 FacturaElectronicaEC_PdfTitle=SRI electronic invoice authorization
 FacturaElectronicaEC_AccessKey=Access key: %s
 FacturaElectronicaEC_AuthorizationNumber=Authorization number: %s

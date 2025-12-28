@@ -99,18 +99,24 @@ class InterfaceFacturaElectronicaEC
         $payloadRespuesta = array();
 
         try {
+            $this->logMessage($config, $object->ref, 'Iniciando flujo SRI para factura ' . $object->id);
+
             $builder = new FacturaElectronicaEC($this->db, $config);
             $unsignedXml = $builder->buildFacturaXML($object);
             $claveAcceso = $builder->generateClaveAcceso($object);
+            $this->logMessage($config, $object->ref, 'XML generado y claveAcceso=' . $claveAcceso);
 
             $signer = new FirmaXadesEC();
             $signedXml = $signer->sign($unsignedXml, $config['cert_path'], $config['cert_password']);
+            $this->logMessage($config, $object->ref, 'XML firmado correctamente');
 
             $rutaFirmado = $this->storeXml($config['ruta_xml'], $claveAcceso, $signedXml, 'firmado');
+            $this->logMessage($config, $object->ref, 'XML firmado almacenado en ' . $rutaFirmado);
 
             $client = new SriClientEC($config);
             $recepcion = $client->enviarComprobante($signedXml);
             $payloadRespuesta['recepcion'] = $recepcion;
+            $this->logMessage($config, $object->ref, 'Recepcion SRI estado=' . ($recepcion['estado'] ?? ''));
 
             if (isset($recepcion['estado'])) {
                 $estadoFinal = $recepcion['estado'];
@@ -119,6 +125,7 @@ class InterfaceFacturaElectronicaEC
             if ($estadoFinal === 'RECIBIDA') {
                 $autorizacion = $client->consultarAutorizacion($claveAcceso);
                 $payloadRespuesta['autorizacion'] = $autorizacion;
+                $this->logMessage($config, $object->ref, 'Autorizacion consultada, estado=' . ($autorizacion['estado'] ?? ''));
 
                 if (!empty($autorizacion['autorizaciones'][0])) {
                     $auth = $autorizacion['autorizaciones'][0];
@@ -127,11 +134,13 @@ class InterfaceFacturaElectronicaEC
                     $fechaAutorizacion = $auth['fechaAutorizacion'];
                     if (!empty($auth['comprobante'])) {
                         $rutaAutorizado = $this->storeXml($config['ruta_xml'], $claveAcceso, $auth['comprobante'], 'autorizado');
+                        $this->logMessage($config, $object->ref, 'XML autorizado guardado en ' . $rutaAutorizado);
                     }
                     if ($estadoFinal === 'AUTORIZADO') {
                         $rutaPdfAutorizado = $this->generateAuthorizedPdf($object, $claveAcceso, $numeroAutorizacion, $fechaAutorizacion, $rutaAutorizado);
                         if (!empty($rutaPdfAutorizado)) {
                             $payloadRespuesta['pdf_autorizado'] = $rutaPdfAutorizado;
+                            $this->logMessage($config, $object->ref, 'PDF autorizado generado en ' . $rutaPdfAutorizado);
                         }
                     }
                 }
@@ -149,8 +158,10 @@ class InterfaceFacturaElectronicaEC
                 setEventMessages($langs->trans('FacturaElectronicaEC_StatusOk', $numeroAutorizacion), null, 'mesgs');
             }
         } catch (Exception $e) {
-            $this->saveTracking($object->id, $claveAcceso, 'DEVUELTO', $numeroAutorizacion, $fechaAutorizacion, $rutaFirmado, $rutaAutorizado, json_encode(array('error' => $e->getMessage())));
-            setEventMessages($e->getMessage(), null, 'errors');
+            $estadoFinal = (stripos($e->getMessage(), 'soap') !== false) ? 'PENDIENTE_OFFLINE' : 'DEVUELTO';
+            $this->logMessage($config, $object->ref, 'Error en flujo SRI: ' . $e->getMessage());
+            $this->saveTracking($object->id, $claveAcceso, $estadoFinal, $numeroAutorizacion, $fechaAutorizacion, $rutaFirmado, $rutaAutorizado, json_encode(array('error' => $e->getMessage())));
+            setEventMessages($langs->trans('FacturaElectronicaEC_StatusError', $estadoFinal, $e->getMessage()), null, 'errors');
             return -1;
         }
 
@@ -311,5 +322,23 @@ class InterfaceFacturaElectronicaEC
         $stmt->bindValue(':ruta_xml_autorizado', $rutaAutorizado);
         $stmt->bindValue(':respuesta_sri', $respuesta);
         $stmt->execute();
+    }
+
+    /**
+     * Registrar en archivo de log los hitos del flujo.
+     *
+     * @param array  $config
+     * @param string $invoiceRef
+     * @param string $message
+     * @return void
+     */
+    private function logMessage($config, $invoiceRef, $message)
+    {
+        if (empty($config['ruta_logs'])) {
+            return;
+        }
+
+        $line = sprintf('[%s] FACT-%s %s%s', date('Y-m-d H:i:s'), $invoiceRef, $message, PHP_EOL);
+        @file_put_contents(rtrim($config['ruta_logs'], '/\\') . '/facturaelectronicaec.log', $line, FILE_APPEND);
     }
 }

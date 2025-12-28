@@ -10,6 +10,7 @@ Módulo de facturación electrónica para Ecuador (SRI) compatible con Dolibarr 
 - **FASE 4 completada:** firma electrónica XAdES-BES con OpenSSL y script de prueba.
 - **FASE 5 completada:** cliente SOAP para recepción/autorización del SRI y script de prueba de envío.
 - **FASE 6 completada:** integración con validación de facturas Dolibarr (envío automático, persistencia de estado y almacenamiento de XML).
+- **FASE 8 completada:** logs detallados, reintentos manuales y contingencia offline.
 - **FASE 7 completada:** generación de PDF autorizado con clave de acceso y datos de autorización.
 
 ## Estructura
@@ -65,6 +66,19 @@ custom/mod_facturaelectronicaec/
 - Cuando el SRI devuelve `AUTORIZADO`, el trigger genera un PDF resumido (`<ref>-sri.pdf`) en el directorio de documentos de la factura (`$conf->facture->dir_output/<ref>/`).
 - El PDF incluye la clave de acceso, número y fecha de autorización y referencia al XML autorizado.
 - El camino del PDF queda registrado en la respuesta almacenada en `llx_facturaelectronicaec_doc.respuesta_sri` para trazabilidad.
+
+## Logs y contingencia (Fase 8)
+
+- El flujo de validación de factura escribe hitos y errores en `FACTURAELECTRONICAEC_RUTA_LOGS/facturaelectronicaec.log` (por defecto `$dol_data_root/mod_facturaelectronicaec/logs`).
+- Los mensajes SRI de recepción/autorización se adjuntan al campo `respuesta_sri` de `llx_facturaelectronicaec_doc` para depuración.
+- En caso de error SOAP o indisponibilidad SRI, el estado guardado será `PENDIENTE_OFFLINE` manteniendo el XML firmado para reenvío manual.
+- Reintento manual: usar el script CLI con el ID de factura Dolibarr:
+
+```bash
+php htdocs/custom/mod_facturaelectronicaec/scripts/reintentar_envio_sri.php <factura_id>
+```
+
+- El script reutiliza el XML firmado almacenado, intenta recepción y autorización, y actualiza el tracking (incluyendo PDF autorizado si aplica). Los resultados se muestran por consola y se guardan en el log.
 
 ## Pruebas locales (firma)
 
