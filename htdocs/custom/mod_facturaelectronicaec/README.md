@@ -11,6 +11,7 @@ Módulo de facturación electrónica para Ecuador (SRI) compatible con Dolibarr 
 - **FASE 5 completada:** cliente SOAP para recepción/autorización del SRI y script de prueba de envío.
 - **FASE 6 completada:** integración con validación de facturas Dolibarr (envío automático, persistencia de estado y almacenamiento de XML).
 - **FASE 8 completada:** logs detallados, reintentos manuales y contingencia offline.
+- **FASE 7 completada:** generación de PDF autorizado con clave de acceso y datos de autorización.
 
 ## Estructura
 
