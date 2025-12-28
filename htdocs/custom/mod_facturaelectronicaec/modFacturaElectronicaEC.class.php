@@ -32,7 +32,8 @@ class modFacturaElectronicaEC extends DolibarrModules
         $this->module_position = 500;
         $this->name = preg_replace('/^mod/i', '', get_class($this));
         $this->description = 'Factura Electronica Ecuador (SRI)';
-        $this->version = 'development';
+        // Packaged release version for Dolibarr external module install.
+        $this->version = '1.0.0';
         $this->picto = 'bill';
 
         $this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);

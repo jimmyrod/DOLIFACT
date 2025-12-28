@@ -32,6 +32,17 @@ custom/mod_facturaelectronicaec/
 
 ## Instalación
 
+### Opción A: instalador de módulo externo (recomendada)
+
+1. Genere el paquete ZIP ejecutando `./build_package.sh` (el archivo queda en `dist/mod_facturaelectronicaec-<version>.zip`).
+2. En Dolibarr, vaya a **Inicio → Configuración → Módulos/Aplicaciones** y elija **Instalar módulo externo**.
+3. Cargue el ZIP y confirme la instalación; Dolibarr ubicará automáticamente el contenido en `htdocs/custom/mod_facturaelectronicaec`.
+4. Active el módulo **Factura Electronica Ecuador** y abra el menú **FacturaElectronicaEC** para configurar parámetros SRI y certificados.
+
+> Nota: el repositorio no versiona los ZIP para evitar binarios en el control de código; ejecute el script de empaquetado antes de subir el módulo.
+
+### Opción B: copia manual
+
 1. Copie el directorio `mod_facturaelectronicaec` dentro de `htdocs/custom/`.
 2. Ingrese a Dolibarr como administrador.
 3. Active el módulo **Factura Electronica Ecuador** desde la lista de módulos.
