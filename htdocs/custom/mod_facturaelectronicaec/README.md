@@ -35,15 +35,16 @@ custom/mod_facturaelectronicaec/
 ### Opción A: instalador de módulo externo (recomendada)
 
 1. Genere el paquete ZIP ejecutando `./build_package.sh` (el archivo queda en `dist/mod_facturaelectronicaec-<version>.zip`).
+   - En cPanel/subdominio sin `htdocs`, defina `DOLI_WEB_ROOT` apuntando a la raíz web (p. ej. `/home/usuario/subdominio`).
 2. En Dolibarr, vaya a **Inicio → Configuración → Módulos/Aplicaciones** y elija **Instalar módulo externo**.
-3. Cargue el ZIP y confirme la instalación; Dolibarr ubicará automáticamente el contenido en `htdocs/custom/mod_facturaelectronicaec`.
+3. Cargue el ZIP y confirme la instalación; Dolibarr ubicará automáticamente el contenido en `<webroot>/custom/mod_facturaelectronicaec`.
 4. Active el módulo **Factura Electronica Ecuador** y abra el menú **FacturaElectronicaEC** para configurar parámetros SRI y certificados.
 
 > Nota: el repositorio no versiona los ZIP para evitar binarios en el control de código; ejecute el script de empaquetado antes de subir el módulo.
 
 ### Opción B: copia manual
 
-1. Copie el directorio `mod_facturaelectronicaec` dentro de `htdocs/custom/`.
+1. Copie el directorio `mod_facturaelectronicaec` dentro de `<webroot>/custom/` (en cPanel suele ser el docroot del subdominio).
 2. Ingrese a Dolibarr como administrador.
 3. Active el módulo **Factura Electronica Ecuador** desde la lista de módulos.
 4. Abra el menú **FacturaElectronicaEC** para acceder a la configuración.
@@ -81,7 +82,7 @@ custom/mod_facturaelectronicaec/
 - Reintento manual: usar el script CLI con el ID de factura Dolibarr:
 
 ```bash
-php htdocs/custom/mod_facturaelectronicaec/scripts/reintentar_envio_sri.php <factura_id>
+php <webroot>/custom/mod_facturaelectronicaec/scripts/reintentar_envio_sri.php <factura_id>
 ```
 
 - El script reutiliza el XML firmado almacenado, intenta recepción y autorización, y actualiza el tracking (incluyendo PDF autorizado si aplica). Los resultados se muestran por consola y se guardan en el log.
@@ -93,11 +94,11 @@ Usar el XML de ejemplo del SRI y un certificado válido:
 ```bash
 FACTURAEC_CERT_PATH=/ruta/certificado.p12 \
 FACTURAEC_CERT_PASSWORD=clave \
-php htdocs/custom/mod_facturaelectronicaec/scripts/test_firma_xades.php
+php <webroot>/custom/mod_facturaelectronicaec/scripts/test_firma_xades.php
 ```
 
 El XML firmado se guarda en:
-`htdocs/custom/mod_facturaelectronicaec/xml/ejemplo_factura_sri_firmado.xml`.
+`<webroot>/custom/mod_facturaelectronicaec/xml/ejemplo_factura_sri_firmado.xml`.
 
 ## Pruebas locales (envío y autorización SRI)
 
@@ -106,7 +107,7 @@ Con un XML firmado válido, ejecutar:
 ```bash
 FACTURAEC_AMBIENTE=1 \
 FACTURAEC_TIMEOUT=60 \
-php htdocs/custom/mod_facturaelectronicaec/scripts/test_envio_sri.php /ruta/al/xml_firmado.xml
+php <webroot>/custom/mod_facturaelectronicaec/scripts/test_envio_sri.php /ruta/al/xml_firmado.xml
 ```
 
 El script realiza la llamada a **Recepción** y, si el estado es `RECIBIDA`, consulta **Autorización**.

@@ -2,7 +2,8 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
-MODULE_DIR="$ROOT_DIR/htdocs/custom/mod_facturaelectronicaec"
+WEB_ROOT="${DOLI_WEB_ROOT:-$ROOT_DIR/htdocs}"
+MODULE_DIR="$WEB_ROOT/custom/mod_facturaelectronicaec"
 DIST_DIR="$ROOT_DIR/dist"
 
 if [[ ! -d "$MODULE_DIR" ]]; then
@@ -10,9 +11,14 @@ if [[ ! -d "$MODULE_DIR" ]]; then
   exit 1
 fi
 
-VERSION=$(php <<'PHP'
+VERSION=$(DOLI_MODULE_PATH="$MODULE_DIR/modFacturaElectronicaEC.class.php" php <<'PHP'
 <?php
-$src = file_get_contents('htdocs/custom/mod_facturaelectronicaec/modFacturaElectronicaEC.class.php');
+$path = getenv('DOLI_MODULE_PATH');
+if (!file_exists($path)) {
+    fwrite(STDERR, "Module descriptor not found: {$path}\n");
+    exit(1);
+}
+$src = file_get_contents($path);
 if (preg_match('/\\$this->version\\s*=\\s*["\\\']([^"\\\']+)/i', $src, $m)) {
     echo $m[1];
     exit;
@@ -28,7 +34,7 @@ ARCHIVE="$DIST_DIR/mod_facturaelectronicaec-${VERSION}.zip"
 rm -f "$ARCHIVE"
 
 (
-  cd "$MODULE_DIR/.."
+  cd "$(dirname "$MODULE_DIR")"
   zip -r "$ARCHIVE" mod_facturaelectronicaec \
     -x "mod_facturaelectronicaec/logs/*" \
     -x "mod_facturaelectronicaec/**/*.log" \
